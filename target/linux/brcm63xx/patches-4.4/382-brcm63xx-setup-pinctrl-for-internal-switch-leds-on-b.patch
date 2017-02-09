@@ -9,7 +9,7 @@ Subject: [PATCH] brcm63xx: setup pinctrl for internal switch leds on bcm6368
 
 --- a/arch/mips/bcm63xx/boards/board_common.c
 +++ b/arch/mips/bcm63xx/boards/board_common.c
-@@ -104,6 +104,15 @@ void __init board_early_setup(const stru
+@@ -103,6 +103,15 @@ void __init board_early_setup(const stru
  				GPIO_MODE_6348_G0_EXT_MII;
  	}
  
