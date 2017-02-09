@@ -1,0 +1,20 @@
+#!/bin/sh
+# Copyright (C) 2017 LEDE project
+
+. /lib/functions/uci-defaults.sh
+. /lib/functions/bmips.sh
+
+board_config_update
+
+led_wifi="$(bmips_get_dt_led wifi)"
+[ -n "$led_wifi" ] && ucidef_set_led_wlan "wifi" "wifi" "$led_wifi" "phy0tpt"
+
+led_usb="$(bmips_get_dt_led usb)"
+[ -n "$led_usb" ] && ucidef_set_led_usbdev "usb" "usb" "$led_usb" "1-1"
+
+led_usb2="$(bmips_get_dt_led usb2)"
+[ -n "$led_usb2" ] && ucidef_set_led_usbdev "usb2" "usb2" "$led_usb2" "2-1"
+
+board_config_flush
+
+exit 0

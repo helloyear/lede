@@ -1,0 +1,154 @@
+/dts-v1/;
+
+#include "bcm63268.dtsi"
+
+/ {
+	compatible = "comtrend,vg-8050", "brcm,bcm63268";
+	model = "Comtrend VG-8050";
+
+	chosen {
+		bootargs = "console=ttyS0,115200 earlycon";
+	};
+
+	aliases {
+		led-boot = &power_green;
+		led-failsafe = &power_red;
+		led-running = &power_green;
+
+		led-internet = &inet_green;
+	};
+
+	memory@0 {
+		device_type = "memory";
+		reg = <0x00000000 0x08000000>;
+	};
+
+	gpio-keys-polled {
+		compatible = "gpio-keys-polled";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		poll-interval = <20>;
+		debounce-interval = <60>;
+
+		reset {
+			label = "reset";
+			gpios = <&gpio1 0 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_RESTART>;
+		};
+		wps {
+			label = "wps";
+			gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_WPS_BUTTON>;
+		};
+	};
+};
+
+&ehci {
+	status = "ok";
+};
+
+&leds0 {
+	status = "ok";
+	brcm,serial-leds;
+	brcm,serial-dat-low;
+	brcm,serial-shift-inv;
+
+	inet_red@2 {
+		reg = <2>;
+		active-low;
+		label = "VG-8050:red:inet";
+	};
+	power_red: power_red@3 {
+		reg = <3>;
+		active-low;
+		label = "VG-8050:red:power";
+	};
+	power_green: power_green@6 {
+		reg = <6>;
+		active-low;
+		label = "VG-8050:green:power";
+		default-state = "on";
+	};
+	wps_green@7 {
+		reg = <7>;
+		active-low;
+		label = "VG-8050:green:wps";
+	};
+	inet_green: inet_green@8 {
+		reg = <8>;
+		active-low;
+		label = "VG-8050:green:inet";
+	};
+	voip_green@10 {
+		reg = <10>;
+		active-low;
+		label = "VG-8050:green:voip";
+	};
+	voip_red@12 {
+		reg = <12>;
+		active-low;
+		label = "VG-8050:red:voip";
+	};
+	wps_red@14 {
+		reg = <14>;
+		active-low;
+		label = "VG-8050:red:wps";
+	};
+};
+
+&nflash {
+	status = "ok";
+
+	nandcs@0 {
+		compatible = "brcm,nandcs";
+		reg = <0>;
+		nand-ecc-step-size = <512>;
+		nand-ecc-strength = <15>;
+		nand-on-flash-bbt;
+		brcm,nand-oob-sector-size = <64>;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			cfe@0 {
+				label = "cfe";
+				reg = <0x0000000 0x0020000>;
+				read-only;
+			};
+			firmware@20000 {
+				label = "firmware";
+				reg = <0x0020000 0x7ae0000>;
+				read-only;
+			};
+			img1@20000 {
+				label = "img1";
+				reg = <0x0020000 0x3d60000>;
+				read-only;
+			};
+			img2@3d80000 {
+				label = "img2";
+				reg = <0x3d80000 0x3d80000>;
+				read-only;
+			};
+			data@7b00000 {
+				label = "data";
+				reg = <0x7b00000 0x0400000>;
+				read-only;
+			};
+		};
+	};
+};
+
+&ohci {
+	status = "ok";
+};
+
+&uart0 {
+	status = "ok";
+};
+
+&usbh {
+	status = "ok";
+};

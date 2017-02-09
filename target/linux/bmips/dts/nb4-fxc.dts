@@ -1,0 +1,148 @@
+/dts-v1/;
+
+#include "bcm6358.dtsi"
+
+/ {
+	compatible = "sfr,nb4-fxc", "brcm,bcm6358";
+	model = "SFR Neuf Box 4 (Foxconn)";
+
+	chosen {
+		bootargs = "console=ttyS0,115200 earlycon";
+	};
+
+	aliases {
+		led-boot = &service_blue;
+		led-failsafe = &service_red;
+		led-running = &service_green;
+
+		led-dsl = &adsl_white;
+		led-internet = &traffic_white;
+		led-wifi = &wifi_white;
+	};
+
+	memory@0 {
+		device_type = "memory";
+		reg = <0x00000000 0x02000000>;
+	};
+
+	gpio-keys-polled {
+		compatible = "gpio-keys-polled";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		poll-interval = <20>;
+		debounce-interval = <60>;
+
+		service {
+			label = "service";
+			gpios = <&gpio0 27 GPIO_ACTIVE_LOW>;
+			linux,code = <BTN_0>;
+		};
+		clip {
+			label = "clip";
+			gpios = <&gpio0 31 GPIO_ACTIVE_LOW>;
+			linux,code = <BTN_1>;
+		};
+		reset {
+			label = "reset";
+			gpios = <&gpio1 2 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_RESTART>;
+		};
+		wps {
+			label = "wps";
+			gpios = <&gpio1 5 GPIO_ACTIVE_LOW>;
+			linux,code = <KEY_WPS_BUTTON>;
+		};
+	};
+
+	gpio-leds {
+		compatible = "gpio-leds";
+
+		traffic_white: traffic_white {
+			label = "NB4-FXC:white:traffic";
+			gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
+		};
+		service_blue: service_blue {
+			label = "NB4-FXC:blue:service";
+			gpios = <&gpio0 4 GPIO_ACTIVE_HIGH>;
+		};
+		wifi_white: wifi_white {
+			label = "NB4-FXC:white:wifi";
+			gpios = <&gpio0 15 GPIO_ACTIVE_HIGH>;
+		};
+		service_red: service_red {
+			label = "NB4-FXC:red:service";
+			gpios = <&gpio0 29 GPIO_ACTIVE_HIGH>;
+		};
+		service_green: service_green {
+			label = "NB4-FXC:green:service";
+			gpios = <&gpio0 30 GPIO_ACTIVE_HIGH>;
+		};
+	};
+};
+
+&ehci {
+	status = "ok";
+};
+
+&leds0 {
+	status = "ok";
+	brcm,clk-div = <1>;
+
+	alarm_white@0 {
+		reg = <0>;
+		active-low;
+		label = "NB4-FXC:white:alarm";
+	};
+	tv_white@2 {
+		reg = <2>;
+		active-low;
+		label = "NB4-FXC:white:tv";
+	};
+	tel_white@3 {
+		reg = <3>;
+		active-low;
+		label = "NB4-FXC:white:tel";
+	};
+	adsl_white: adsl_white@4 {
+		reg = <4>;
+		active-low;
+		label = "NB4-FXC:white:adsl";
+	};
+};
+
+&ohci {
+	status = "ok";
+};
+
+&pflash {
+	status = "ok";
+
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		cfe@0 {
+			label = "cfe";
+			reg = <0x000000 0x010000>;
+			read-only;
+		};
+		firmware@10000 {
+			label = "firmware";
+			reg = <0x010000 0x7e0000>;
+		};
+		nvram@7f0000 {
+			label = "nvram";
+			reg = <0x7f0000 0x010000>;
+			read-only;
+		};
+	};
+};
+
+&uart0 {
+	status = "ok";
+};
+
+&usbh {
+	status = "ok";
+};

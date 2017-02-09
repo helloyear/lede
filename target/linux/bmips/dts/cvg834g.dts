@@ -1,0 +1,62 @@
+/dts-v1/;
+
+#include "bcm3368.dtsi"
+
+/ {
+	compatible = "netgear,cvg834g", "brcm,bcm3368";
+	model = "Netgear CVG834G";
+
+	chosen {
+		bootargs = "console=ttyS0,115200 earlycon";
+	};
+
+	aliases {
+		led-boot = &power_green;
+		led-failsafe = &power_green;
+		led-running = &power_green;
+	};
+
+	memory@0 {
+		device_type = "memory";
+		reg = <0x00000000 0x02000000>;
+	};
+
+	gpio-leds {
+		compatible = "gpio-leds";
+
+		power_green: power_green {
+			label = "CVG834G:green:power";
+			gpios = <&gpio1 5 GPIO_ACTIVE_HIGH>;
+			default-state = "on";
+		};
+	};
+};
+
+&pflash {
+	status = "ok";
+
+	partitions {
+		compatible = "fixed-partitions";
+		#address-cells = <1>;
+		#size-cells = <1>;
+
+		cfe@0 {
+			label = "CFE";
+			reg = <0x000000 0x010000>;
+			read-only;
+		};
+		firmware@10000 {
+			label = "firmware";
+			reg = <0x010000 0x3e0000>;
+		};
+		nvram@3f0000 {
+			label = "nvram";
+			reg = <0x3f0000 0x010000>;
+			read-only;
+		};
+	};
+};
+
+&uart0 {
+	status = "ok";
+};

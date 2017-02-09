@@ -1,0 +1,97 @@
+/dts-v1/;
+
+#include "bcm6362.dtsi"
+
+/ {
+	compatible = "sfr,nb6-ser", "brcm,bcm6362";
+	model = "SFR Neuf Box 6 (Sercomm)";
+
+	chosen {
+		bootargs = "console=ttyS0,115200 earlycon";
+	};
+
+	memory@0 {
+		device_type = "memory";
+		reg = <0x00000000 0x04000000>;
+	};
+
+	gpio-keys-polled {
+		compatible = "gpio-keys-polled";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		poll-interval = <20>;
+		debounce-interval = <60>;
+
+		service {
+			label = "service";
+			gpios = <&gpio0 10 1>;
+			linux,code = <BTN_0>;
+		};
+		wlan {
+			label = "wlan";
+			gpios = <&gpio0 12 1>;
+			linux,code = <KEY_WLAN>;
+		};
+		reset {
+			label = "reset";
+			gpios = <&gpio0 24 1>;
+			linux,code = <KEY_RESTART>;
+		};
+		wps {
+			label = "wps";
+			gpios = <&gpio0 25 1>;
+			linux,code = <KEY_WPS_BUTTON>;
+		};
+	};
+};
+
+&ehci {
+	status = "ok";
+};
+
+&ohci {
+	status = "ok";
+};
+
+&uart0 {
+	status = "ok";
+};
+
+
+&hsspi {
+	status = "okay";
+
+	m25p80@0 {
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+
+		spi-max-frequency = <20000000>;
+		spi-tx-bus-width = <2>;
+		spi-rx-bus-width = <2>;
+
+		partitions {
+			compatible = "fixed-partitions";
+			#address-cells = <1>;
+			#size-cells = <1>;
+
+			cfe@0 {
+				label = "CFE";
+				reg = <0x000000 0x010000>;
+				read-only;
+			};
+			firmware@10000 {
+				label = "firmware";
+				reg = <0x010000 0xfe0000>;
+			};
+			nvram@ff0000 {
+				label = "nvram";
+				reg = <0xff0000 0x010000>;
+				read-only;
+			};
+		};
+	};
+};
+
+&usbh {
+	status = "ok";
+};
