@@ -9,7 +9,7 @@
 	compatible = "thomson,homehub2a", "brcm,bcm6358";
 
 	chosen {
-		bootargs = "root=/dev/mtdblock2 rootfstype=squashfs,jffs2 noinitrd console=ttyS0,115200";
+		bootargs = "console=ttyS0,115200";
 	};
 
 	spi-gpio {
@@ -127,15 +127,13 @@
 &pflash {
 	status = "ok";
 
-	linux,part-probe = "bcm63xxpart";
-
 	cfe@0 {
 		label = "CFE";
 		reg = <0x000000 0x020000>;
 	};
 
-	linux@20000 {
-		label = "linux";
+	firmware@20000 {
+		label = "firmware";
 		reg = <0x020000 0xfc0000>;
 	};
 

@@ -9,7 +9,7 @@
 	compatible = "davolink,dv-201amr", "brcm,bcm6348";
 
 	chosen {
-		bootargs = "root=/dev/mtdblock2 rootfstype=squashfs,jffs2 noinitrd console=ttyS0,115200";
+		bootargs = "console=ttyS0,115200";
 	};
 };
 
@@ -29,8 +29,8 @@
 		read-only;
 	};
 
-	linux@410000 {
-		label = "linux";
+	firmware@410000 {
+		label = "firmware";
 		reg = <0x410000 0x3f0000>;
 	};
 };

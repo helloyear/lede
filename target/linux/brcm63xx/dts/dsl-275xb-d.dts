@@ -9,7 +9,7 @@
 	compatible = "d-link,dsl-275xb-d", "brcm,bcm6318";
 
 	chosen {
-		bootargs = "root=/dev/mtdblock2 rootfstype=squashfs,jffs2 noinitrd console=ttyS0,115200";
+		bootargs = "console=ttyS0,115200";
 	};
 
 	gpio-keys-polled {
@@ -93,17 +93,15 @@
 		#address-cells = <1>;
 		#size-cells = <1>;
 
-		linux,part-probe = "bcm63xxpart";
-
 		cfe@0 {
 			reg = <0x000000 0x010000>;
 			label = "cfe";
 			read-only;
 		};
 
-		linux@10000 {
+		firmware@10000 {
 			reg = <0x010000 0x7e0000>;
-			label = "linux";
+			label = "firmware";
 		};
 
 		nvram@7f0000 {

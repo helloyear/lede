@@ -9,7 +9,7 @@
 	compatible = "tecom,gw6200", "brcm,bcm6348";
 
 	chosen {
-		bootargs = "root=/dev/mtdblock2 rootfstype=squashfs,jffs2 noinitrd console=ttyS0,115200";
+		bootargs = "console=ttyS0,115200";
 	};
 
 	gpio-keys-polled {
@@ -51,16 +51,14 @@
 &pflash {
 	status = "ok";
 
-	linux,part-probe = "bcm63xxpart";
-
 	cfe@0 {
 		label = "CFE";
 		reg = <0x000000 0x010000>;
 		read-only;
 	};
 
-	linux@10000 {
-		label = "linux";
+	firmware@10000 {
+		label = "firmware";
 		reg = <0x010000 0x7e0000>;
 	};
 
