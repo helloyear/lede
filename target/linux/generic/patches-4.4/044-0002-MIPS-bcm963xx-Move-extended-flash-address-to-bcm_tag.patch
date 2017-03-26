@@ -1,0 +1,66 @@
+From 1f29cb19cb7c3bea870d7da02ec23823af9d636e Mon Sep 17 00:00:00 2001
+From: Simon Arlott <simon@fire.lp0.eu>
+Date: Sun, 13 Dec 2015 22:47:55 +0000
+Subject: [PATCH] MIPS: bcm963xx: Move extended flash address to bcm_tag header
+ file
+
+The extended flash address needs to be subtracted from bcm_tag flash
+image offsets. Move this value to the bcm_tag header file.
+
+Renamed define name to consistently use bcm963xx for flash layout
+which should be considered a property of the board and not the SoC
+(i.e. bcm63xx could theoretically be used on a board without CFE
+or any flash).
+
+Signed-off-by: Simon Arlott <simon@fire.lp0.eu>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Cc: Brian Norris <computersforpeace@gmail.com>
+Cc: Kevin Cernekee <cernekee@gmail.com>
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Jonas Gorski <jogo@openwrt.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc: MIPS Mailing List <linux-mips@linux-mips.org>
+Cc: MTD Maling List <linux-mtd@lists.infradead.org>
+Patchwork: https://patchwork.linux-mips.org/patch/11833/
+Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
+---
+ drivers/mtd/bcm63xxpart.c    | 6 ++----
+ include/linux/bcm963xx_tag.h | 5 +++++
+ 2 files changed, 7 insertions(+), 4 deletions(-)
+
+--- a/drivers/mtd/bcm63xxpart.c
++++ b/drivers/mtd/bcm63xxpart.c
+@@ -37,8 +37,6 @@
+ #include <asm/mach-bcm63xx/bcm63xx_nvram.h>
+ #include <asm/mach-bcm63xx/board_bcm963xx.h>
+ 
+-#define BCM63XX_EXTENDED_SIZE	0xBFC00000	/* Extended flash address */
+-
+ #define BCM63XX_CFE_BLOCK_SIZE	SZ_64K		/* always at least 64KiB */
+ 
+ #define BCM63XX_CFE_MAGIC_OFFSET 0x4e0
+@@ -123,8 +121,8 @@ static int bcm63xx_parse_cfe_partitions(
+ 		pr_info("CFE boot tag found with version %s and board type %s\n",
+ 			tagversion, boardid);
+ 
+-		kerneladdr = kerneladdr - BCM63XX_EXTENDED_SIZE;
+-		rootfsaddr = rootfsaddr - BCM63XX_EXTENDED_SIZE;
++		kerneladdr = kerneladdr - BCM963XX_EXTENDED_SIZE;
++		rootfsaddr = rootfsaddr - BCM963XX_EXTENDED_SIZE;
+ 		spareaddr = roundup(totallen, master->erasesize) + cfelen;
+ 
+ 		if (rootfsaddr < kerneladdr) {
+--- a/include/linux/bcm963xx_tag.h
++++ b/include/linux/bcm963xx_tag.h
+@@ -28,6 +28,11 @@
+ 	"DWV-S0", \
+ }
+ 
++/* Extended flash address, needs to be subtracted
++ * from bcm_tag flash image offsets.
++ */
++#define BCM963XX_EXTENDED_SIZE	0xBFC00000
++
+ /*
+  * The broadcom firmware assumes the rootfs starts the image,
+  * therefore uses the rootfs start (flash_image_address)

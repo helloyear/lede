@@ -1,14 +1,14 @@
 --- a/drivers/mtd/bcm63xxpart.c
 +++ b/drivers/mtd/bcm63xxpart.c
-@@ -32,6 +32,7 @@
+@@ -33,6 +33,7 @@
  #include <linux/vmalloc.h>
  #include <linux/mtd/mtd.h>
  #include <linux/mtd/partitions.h>
 +#include <linux/of.h>
  
  #include <asm/mach-bcm63xx/bcm63xx_nvram.h>
- #include <asm/mach-bcm63xx/bcm963xx_tag.h>
-@@ -43,46 +44,35 @@
+ #include <asm/mach-bcm63xx/bcm63xx_board.h>
+@@ -41,46 +42,35 @@
  
  #define BCM63XX_CFE_MAGIC_OFFSET 0x4e0
  
@@ -70,15 +70,15 @@
  	}
  
  	computed_crc = crc32_le(IMAGETAG_CRC_START, (u8 *)buf,
-@@ -101,7 +91,6 @@ static int bcm63xx_parse_cfe_partitions(
+@@ -99,7 +89,6 @@ static int bcm63xx_parse_cfe_partitions(
  
- 		kerneladdr = kerneladdr - BCM63XX_EXTENDED_SIZE;
- 		rootfsaddr = rootfsaddr - BCM63XX_EXTENDED_SIZE;
+ 		kerneladdr = kerneladdr - BCM963XX_EXTENDED_SIZE;
+ 		rootfsaddr = rootfsaddr - BCM963XX_EXTENDED_SIZE;
 -		spareaddr = roundup(totallen, master->erasesize) + cfelen;
  
  		if (rootfsaddr < kerneladdr) {
  			/* default Broadcom layout */
-@@ -110,8 +99,8 @@ static int bcm63xx_parse_cfe_partitions(
+@@ -108,8 +97,8 @@ static int bcm63xx_parse_cfe_partitions(
  		} else {
  			/* OpenWrt layout */
  			rootfsaddr = kerneladdr + kernellen;
@@ -89,7 +89,7 @@
  		}
  	} else {
  		pr_warn("CFE boot tag CRC invalid (expected %08x, actual %08x)\n",
-@@ -119,23 +108,139 @@ static int bcm63xx_parse_cfe_partitions(
+@@ -117,23 +106,139 @@ static int bcm63xx_parse_cfe_partitions(
  		kernellen = 0;
  		rootfslen = 0;
  		rootfsaddr = 0;
@@ -239,7 +239,7 @@
  
  	/* Start building partition list */
  	parts[curpart].name = "CFE";
-@@ -143,29 +248,7 @@ static int bcm63xx_parse_cfe_partitions(
+@@ -141,29 +246,7 @@ static int bcm63xx_parse_cfe_partitions(
  	parts[curpart].size = cfelen;
  	curpart++;
  
@@ -270,7 +270,7 @@
  
  	parts[curpart].name = "nvram";
  	parts[curpart].offset = master->size - nvramlen;
-@@ -174,25 +257,33 @@ static int bcm63xx_parse_cfe_partitions(
+@@ -172,25 +255,33 @@ static int bcm63xx_parse_cfe_partitions(
  
  	/* Global partition "linux" to make easy firmware upgrade */
  	parts[curpart].name = "linux";

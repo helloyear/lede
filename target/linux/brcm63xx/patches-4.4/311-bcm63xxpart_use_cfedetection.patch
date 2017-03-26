@@ -1,15 +1,13 @@
 --- a/drivers/mtd/bcm63xxpart.c
 +++ b/drivers/mtd/bcm63xxpart.c
-@@ -35,7 +35,7 @@
+@@ -35,36 +35,12 @@
+ #include <linux/mtd/partitions.h>
  
  #include <asm/mach-bcm63xx/bcm63xx_nvram.h>
- #include <asm/mach-bcm63xx/bcm963xx_tag.h>
 -#include <asm/mach-bcm63xx/board_bcm963xx.h>
 +#include <asm/mach-bcm63xx/bcm63xx_board.h>
  
- #define BCM63XX_EXTENDED_SIZE	0xBFC00000	/* Extended flash address */
- 
-@@ -43,30 +43,6 @@
+ #define BCM63XX_CFE_BLOCK_SIZE	SZ_64K		/* always at least 64KiB */
  
  #define BCM63XX_CFE_MAGIC_OFFSET 0x4e0
  
@@ -40,7 +38,7 @@
  static int bcm63xx_parse_cfe_partitions(struct mtd_info *master,
  					struct mtd_partition **pparts,
  					struct mtd_part_parser_data *data)
-@@ -85,7 +61,7 @@ static int bcm63xx_parse_cfe_partitions(
+@@ -83,7 +59,7 @@ static int bcm63xx_parse_cfe_partitions(
  	u32 computed_crc;
  	bool rootfs_first = false;
  
