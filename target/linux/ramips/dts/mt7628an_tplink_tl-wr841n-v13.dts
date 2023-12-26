@@ -91,3 +91,13 @@
 		};
 	};
 };
+ gpio_export {
+            compatible = "gpio-export";
+            #size-cells = <0>;
+
+            usb {
+                    gpio-export,name = "usb";
+                    gpio-export,output = <1>;
+                    gpios = <&gpio0 11 GPIO_ACTIVE_LOW>;
+            };
+    };
